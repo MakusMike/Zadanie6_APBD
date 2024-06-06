@@ -1,17 +1,25 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using Zadanie6_APBD.Context;
 
-// Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+ var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+ builder.Services.AddEndpointsApiExplorer();
+ builder.Services.AddSwaggerGen();
+ builder.Services.AddControllers();
+ builder.Services.AddDbContext<AppDbContext>(options =>
+ {
+     options.UseSqlServer(builder.Configuration.GetConnectionString("Data Source=localhost;Database=master;User Id=sa;Password=StrongPassword1@;Encrypt=false"));
+ });
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+ var app = builder.Build();
 
-app.UseHttpsRedirection();
+ if (app.Environment.IsDevelopment())
+ {
+     app.UseSwagger();
+     app.UseSwaggerUI();
+ }
+
+ app.UseHttpsRedirection();
+ app.MapControllers();
+ app.Run();
 
